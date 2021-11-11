@@ -4,7 +4,7 @@
   "description": "A web-based player for Traiter stories.",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/index.jsx --bundle --outfile='dist/app.js'",
+    "build": "esbuild src/index.jsx --bundle --outfile='dist/app.js' && cp -R static/* dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -17,7 +17,7 @@
     "jest": "^27.2.4"
   },
   "dependencies": {
-    "reac": "^0.0.0",
+    "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }
 }
