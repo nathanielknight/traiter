@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+import * as storylet from "./storylet";
+import * as engine from "./engine";
 
 
 
@@ -15,9 +17,15 @@ function Action(props) {
 }
 
 
-function ChoiceUI(props) {
+interface ChoiceUIProps {
+    readonly storylet: storylet.Storylet
+    takeAction: (n: number) => void,
+}
+
+function ChoiceUI(props: ChoiceUIProps) {
+    console.info("ChoiceUI props: ", props);
     const actions = Array.from(
-        props.storylet.actions.map((action, idx) => Action({ action, idx, takeAction: () => props.takeAction(idx) }))
+        props.storylet.choices.map((choice, idx) => Action({ action: choice.action, idx, takeAction: () => props.takeAction(idx) }))
     );
     console.info(actions);
 
@@ -33,64 +41,81 @@ function ChoiceUI(props) {
     );
 }
 
-class TraiterPlayer extends React.Component {
-    constructor(props) {
-        this.engine = props.engine;
-        this.state = {
-            storylet: this.engine.currentStorylet(),
-        };
+
+interface PlayerProps {
+    engine: engine.Engine
+}
+
+class TraiterPlayer extends React.Component<PlayerProps> {
+    #engine: engine.Engine
+    constructor(props: PlayerProps) {
+        super(props)
+        this.#engine = props.engine
     }
 
     render() {
-        return ChoiceUI({
-            storylet: this.state.storylet,
-            takeAction: (idx) => this.takeAction(idx),
-        })
-    }
-
-    takeAction(idx) {
-        this.engine.takeAction(idx);
-        this.setState({
-            storylet: this.engine.currentStorylet(),
-        });
-    }
-}
-
-class TestEngine {
-    constructor({storylets}) {
-        this.storylets = storylets;
-        this.currentStorylet = "start";
-    }
-
-    currentStorylet() {
-        return this.storylets.get(this.currentStorylet);
-    }
-
-    takeAction(idx) {
-        let storylet = this.currentStorylet();
-        let action = storylet.actions[idx];
-        if (action == undefined) {
-            return;
+        const storylet = this.#engine.currentStorylet()
+        const takeAction = (idx: number) => {
+            this.#engine.takeAction(idx)
+            this.forceUpdate()
         }
-        this.applyAction(action);
-    }
-
-    applyAction(action) {XMLDocument    
-        // TODO(nknight): Implement this
-        console.log("taking action: ", action);
+        return <ChoiceUI storylet={storylet} takeAction={takeAction} />
     }
 }
+
+const testStorylets: ReadonlyArray<storylet.Storylet> = [
+    {
+        id: "start",
+        body: "<p>We're at start</p>",
+        choices: [
+            {
+                body: "<p>Go to bar</p>",
+                action: {
+                    kind: "fixed",
+                    outcome: { body: "You went to bar.", goto: "bar" }
+                }
+            }
+        ],
+    },
+    {
+        id: "bar",
+        body: "<p>We're at bar</p>",
+        choices: [
+            {
+                body: "<p>Stay</p>",
+                action: {
+                    kind: "fixed",
+                    outcome: {
+                        body: "Staying here.",
+                        changes: [
+                            { op: "gain", quality: "Stay length", amount: 1 }
+                        ]
+                    },
+                }
+            },
+            {
+                body: "<p>Back</p>",
+                requirements: [
+                    { pred: "gt", quality: "Stay length", value: 3 }
+                ],
+                action: {
+                    kind: "fixed",
+                    outcome: {
+                        body: "Go back to the start",
+                        changes: [
+                            { op: "clear", quality: "Stay length" }
+                        ],
+                        goto: "start"
+                    },
+                }
+            }
+        ]
+    }
+]
 
 function init(element) {
-    let storylet = {
-        body: "<p>Once there was a <b>Way</b> to get back <i>Home</i>.</p>",
-        actions: [
-            { body: "<p>Thing the first</p>" },
-            { body: "<p>Thing the second</p>" },
-        ]
-
-    };
-    render(<ChoiceUI storylet={storylet} takeAction={(idx) => console.info(`took action ${idx}`)} />, traiter);
+    const e = new engine.BasicEngine({ storylets: testStorylets, startAt: "start" })
+    render(<TraiterPlayer engine={e} />, element);
 }
 
 
