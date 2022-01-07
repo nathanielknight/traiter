@@ -1,0 +1,26 @@
+body {
+    max-width: 40em;
+    margin: auto;
+    padding: 0 0.5em;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.traiter-choice {
+    border: 1px solid black;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    background-color: #eee;
+    border-radius: 0.5em;
+}
+
+.traiter-choice-button {
+    padding: 0.3em;
+}
+
+.traiter-requirements {
+    font-size: 75%;
+}
+
+.traiter-unavailable {
+    color: #999;
+}
