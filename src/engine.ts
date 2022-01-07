@@ -60,7 +60,7 @@ export class BasicEngine implements Engine {
             console.debug(`Choice ${idx} undefined for ${storylet.id}`)
             return
         }
-        if (this.requirementsMet(choice)) {
+        if (!this.requirementsMet(choice)) {
             console.debug(`Tried to take choice ${idx}; requirements not met`)
             return
         }
@@ -74,14 +74,14 @@ export class BasicEngine implements Engine {
 
         function outcomeOf(action: storylet.Action): storylet.Outcome {
             const clamp = (x: number, m: number, M: number): number => Math.min(Math.max(x, m), M)
-            switch (choice.action.kind) {
+            switch (action.kind) {
                 case "fixed":
-                    return choice.action.outcome
+                    return action.outcome
                 case "chance":
-                    if (Math.random() < clamp(choice.action.successChance, 0, 1)) {
-                        return choice.action.successOutcome
+                    if (Math.random() < clamp(action.successChance, 0, 1)) {
+                        return action.successOutcome
                     } else {
-                        return choice.action.failureOutcome
+                        return action.failureOutcome
                     }
                 case "check":
                     // TODO

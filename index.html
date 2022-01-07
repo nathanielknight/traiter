@@ -10,55 +10,8 @@
 
 <body>
     <div id="traiter-main"></div>
-    <script src="./traiter.js"></script>
-    <script>
-        initialize([
-            {
-                id: "start",
-                body: "<p>We're at start</p>",
-                choices: [
-                    {
-                        body: "<p>Go to bar</p>",
-                        action: {
-                            outcome: { body: "You went to bar.", goto: "bar" }
-                        }
-                    }
-                ],
-            },
-            {
-                id: "bar",
-                body: "<p>We're at bar</p>",
-                choices: [
-                    {
-                        body: "<p>Stay</p>",
-                        action: {
-                            outcome: {
-                                body: "Staying here.",
-                                changes: [
-                                    { op: "gain", quality: "Stay length", amount: 1 }
-                                ]
-                            },
-                        }
-                    },
-                    {
-                        body: "<p>Back</p>",
-                        requirements: [
-                            { pred: "gt", quality: "Stay length", value: 3 }
-                        ],
-                        action: {
-                            outcome: {
-                                body: "Go back to the start",
-                                changes: [
-                                    { op: "clear", quality: "Stay length" }
-                                ],
-                                goto: "start"
-                            },
-                        }
-                    }
-                ]
-            }
-        ]);
-    </script>
+    <script src="./index.js"></script>
+
 </body>
 
 </html>

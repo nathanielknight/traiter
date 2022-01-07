@@ -166,14 +166,11 @@ function initializeChoiceKeyListeners() {
   })
 }
 
-// -------------------------------------------------------------------------
-// Game Logic
-
 
 
 // -------------------------------------------------------------------------
 // ENTRYPOINT
-export function initialize(args: BasicEngineArgs): void {
+export function start(args: BasicEngineArgs): void {
   engine = new BasicEngine(args)
   setStorylet(engine.currentStorylet())
   initializeChoiceKeyListeners()
