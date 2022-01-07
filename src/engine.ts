@@ -1,11 +1,12 @@
 import * as storylet from "./storylet";
 
 export interface Engine {
-    takeAction(idx: number): void
+    takeChoice(idx: number): void
     currentStorylet(): storylet.Storylet
+    requirementsMet(choice: storylet.Choice): boolean
 }
 
-interface BasicEngineArgs {
+export interface BasicEngineArgs {
     storylets: ReadonlyArray<storylet.Storylet>,
     startAt: string,
     qualities?: ReadonlyArray<storylet.Quality>,
@@ -44,18 +45,22 @@ export class BasicEngine implements Engine {
 
     /** Returns the storylet that is currently playing. */
     currentStorylet(): storylet.Storylet {
-        return this.#storylets[this.currentStoryletId]
+        const s = this.#storylets.get(this.currentStoryletId)
+        if (s == undefined) {
+            throw new Error(`Missing storylet for ${this.currentStoryletId}`);
+        }
+        return s
     }
 
     /** Take the indicated action from the current storylet, returning the outcome (or ) */
-    takeAction(idx: number): undefined | storylet.Outcome {
+    takeChoice(idx: number): undefined | storylet.Outcome {
         const storylet = this.currentStorylet()
         const choice = storylet.choices[idx]
         if (choice == undefined) {
             console.debug(`Choice ${idx} undefined for ${storylet.id}`)
             return
         }
-        if (this.#requirementsMet(choice)) {
+        if (this.requirementsMet(choice)) {
             console.debug(`Tried to take choice ${idx}; requirements not met`)
             return
         }
@@ -125,7 +130,7 @@ export class BasicEngine implements Engine {
     }
 
 
-    #requirementsMet(choice: storylet.Choice): boolean {
+    requirementsMet(choice: storylet.Choice): boolean {
         const reqs = choice.requirements ?? []
         return reqs.every(r => this.#requirementMet(r))
     }
