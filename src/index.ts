@@ -46,7 +46,19 @@ const storylets: ReadonlyArray<Storylet> = [
                         goto: "start"
                     },
                 }
-            }
+            },
+	    {
+		    body: "<p>Reset</p>",
+		    action: {
+			    kind: "fixed",
+			    outcome: {
+				    "body": "<p>All that fer nothin</p>",
+				    changes: [
+					    {op: "clear", quality: "Stay length"}
+				    ],
+			    },
+		    },
+	    },
         ]
     }
 ];
