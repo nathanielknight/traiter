@@ -63,7 +63,7 @@ export type Requirement =
     | { pred: "unset", quality: string }
 
 export type Change =
-    { op: "set", quality: Quality }
+    { op: "set", quality: string, number?: number, text?: string }
     | { op: "clear", quality: string }
     | { op: "gain", quality: string, amount: number }
     | { op: "lose", quality: string, amount: number }
