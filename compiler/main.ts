@@ -3,6 +3,7 @@ import { parse } from "https://deno.land/std@0.125.0/encoding/yaml.ts";
 
 import { Storylet } from "../storylet.ts";
 import { checkStorylet } from "./schema.ts";
+import { compileBodyMarkdown } from "./utils.ts";
 
 interface ParsedStorylet {
   entry: WalkEntry;
@@ -41,7 +42,7 @@ async function loadStorylets(
  * - Compile markdown bodies
  */
 function process(s: ParsedStorylet): ParsedStorylet {
-  // TODO: compile markdown bodies
+  compileBodyMarkdown(s.storylet);
   return s;
 }
 

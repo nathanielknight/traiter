@@ -1,7 +1,8 @@
 import { Storylet } from "../storylet.ts";
 import {z} from "./deps.ts";
 
-const qualitySchema = z.object({
+// Not sure if this is required, but it's here for completeness' sake.
+const _qualitySchema = z.object({
   name: z.string(),
   number: z.number().optional(),
   text: z.string().optional(),
