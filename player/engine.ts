@@ -1,4 +1,4 @@
-import * as storylet from "./storylet";
+import * as storylet from "../storylet";
 
 export interface Engine {
     takeChoice(idx: number): void

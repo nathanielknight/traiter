@@ -1,5 +1,5 @@
 import { start } from "./traiter";
-import { Storylet } from "./storylet";
+import { Storylet } from "../storylet";
 
 const storylets: ReadonlyArray<Storylet> = [
     {

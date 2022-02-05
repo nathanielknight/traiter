@@ -1,7 +1,7 @@
 import { Engine, BasicEngine, BasicEngineArgs } from "./engine";
-import * as storylet from "./storylet";
+import * as storylet from "../storylet";
 
-let activeChoice: number, engine: Engine, lastOutcome: storylet.Outcome;
+let activeChoice: number, engine: Engine;
 
 // -------------------------------------------------------------------------
 // TEMPLATES/UI
