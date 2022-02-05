@@ -3,7 +3,7 @@ import { parse } from "https://deno.land/std@0.125.0/encoding/yaml.ts";
 
 import { Storylet } from "../storylet.ts";
 import { checkStorylet } from "./schema.ts";
-import { compileBodyMarkdown } from "./utils.ts";
+import { compileBodyMarkdown, missingStoryletIds } from "./utils.ts";
 
 interface ParsedStorylet {
   entry: WalkEntry;
@@ -46,8 +46,16 @@ function process(s: ParsedStorylet): ParsedStorylet {
   return s;
 }
 
-function checkOk(_s: ParsedStorylet): boolean {
+function checkOk(ps: ReadonlyArray<ParsedStorylet>): boolean {
+  const storyletIDs = new Set(Array.from(ps.map(p => p.storylet.id)));
   // TODO: check for and report problemsm (missing storylets)
+  ps.forEach(p => {
+    const missing = missingStoryletIds(p.storylet, storyletIDs);
+    if (missing.length > 0) {
+      const msg = `${p.entry.path} refers to non-existent storylet(s): ${missing.join(',')}`;
+      console.warn(msg)
+    }
+  })
   return true;
 }
 
@@ -64,18 +72,12 @@ async function main() {
 
   // Process storylets
   const processedStorylets = storylets.map(process);
-  const allOk = processedStorylets.every(checkOk);
+  checkOk(processedStorylets);
 
   // Print storylets to stdout
   const output = JSON.stringify(processedStorylets.map((ps) => ps.storylet));
   const encoder = new TextEncoder();
   await Deno.stdout.write(encoder.encode(output));
-
-  if (allOk) {
-    Deno.exit(0);
-  } else {
-    Deno.exit(1);
-  }
 }
 
 await main();
