@@ -1,0 +1,19 @@
+id: start
+body: |
+  This is the beginning.
+choices:
+  - body: |
+      # Stay
+
+      Should I stay?
+    action:
+      kind: "fixed"
+      outcome:
+        body: |
+          Yes, staying is best I think.
+        goto: foobar
+        changes:
+          - op: "gain"
+            quality: "Stay Length"
+            amount: 1
+      
