@@ -1,5 +1,5 @@
 import { Storylet } from "../storylet.ts";
-import { z } from "https://deno.land/x/zod@v3.11.6/mod.ts";
+import {z} from "./deps.ts";
 
 const qualitySchema = z.object({
   name: z.string(),
